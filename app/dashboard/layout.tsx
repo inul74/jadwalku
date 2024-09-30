@@ -2,7 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
 import React, { ReactNode } from "react";
+import { redirect } from "next/navigation";
 
+import prisma from "../lib/db";
 import Logo from "@/public/logo.svg";
 import { signOut } from "../lib/auth";
 import { requireUser } from "../lib/hooks";
@@ -20,8 +22,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
+async function getData(userId: string) {
+  const data = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      userName: true,
+    },
+  });
+
+  if (!data?.userName) {
+    return redirect("/onboarding");
+  }
+
+  return data;
+}
+
 export default async function Dashboard({ children }: { children: ReactNode }) {
   const session = await requireUser();
+  const data = await getData(session.user?.id as string);
 
   return (
     <>
