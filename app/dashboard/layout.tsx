@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 async function getData(userId: string) {
@@ -124,7 +125,9 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard/settings">Settings</Link>
+                    <Link href="/dashboard/settings" className="cursor-pointer">
+                      Settings
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <form
@@ -146,6 +149,8 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
+
+      <Toaster richColors closeButton />
     </>
   );
 }

@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { GitHubAuthButton, GoogleAuthButton } from "./SubmitButton";
@@ -18,12 +20,14 @@ export function AuthModal() {
         <Button>Try for Free</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[360px]">
+        <DialogTitle className="hidden"></DialogTitle>
         <DialogHeader className="flex flex-row justify-center items-center gap-x-2">
           <Image src={Logo} className="size-10" alt="Logo" />
           <h4 className="text-3xl font-semibold">
             Jadwal<span className="text-primary">Ku</span>
           </h4>
         </DialogHeader>
+        <DialogDescription className="hidden"></DialogDescription>
         <div className="flex flex-col gap-3 mt-5">
           <form
             className="w-full"
