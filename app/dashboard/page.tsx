@@ -1,11 +1,23 @@
 import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ExternalLink, Pen, Settings, Trash, Users2 } from "lucide-react";
 
 import prisma from "../lib/db";
 import { requireUser } from "../lib/hooks";
 import { EmptyState } from "../components/EmptyState";
+import { CopyLinkMenuItem } from "../components/CopyLinkMenuItem";
+import { MenuActiveSwitcher } from "../components/EventTypeSwitcher";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
 async function getData(userId: string) {
@@ -64,7 +76,84 @@ export default async function DashboardPage() {
         />
       ) : (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <p>hey we have event types</p>
+          {data.eventType.map((item) => (
+            <div
+              className="overflow-hidden shadow rounded-lg border relative"
+              key={item.id}
+            >
+              <div className="absolute top-2 right-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <Settings className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-20" align="end">
+                    <DropdownMenuLabel>Event</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem asChild>
+                        <Link href={`/${data.userName}/${item.url}`}>
+                          <ExternalLink className="mr-2 h-4 w-4" />
+                          <span>Preview</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <CopyLinkMenuItem
+                        meetingUrl={`${process.env.NEXT_PUBLIC_URL}/${data.userName}/${item.url}`}
+                      />
+                      <DropdownMenuItem asChild>
+                        <Link href={`/dashboard/event/${item.id}`}>
+                          <Pen className="mr-2 h-4 w-4" />
+                          <span>Edit</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href={`/dashboard/event/${item.id}/delete`}>
+                        <Trash className="mr-2 h-4 w-4" />
+                        <span className="text-red-500 font-semibold">
+                          Delete
+                        </span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              <Link href={`/dashboard/event/${item.id}`}>
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <Users2 className="h-6 w-6" aria-hidden="true" />
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium truncate ">
+                          {item.duration} Minutes Meeting
+                        </dt>
+                        <dd>
+                          <div className="text-lg font-medium ">
+                            {item.title}
+                          </div>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+              <div className="bg-muted dark:bg-gray-900 px-5 py-3 flex justify-between items-center">
+                <MenuActiveSwitcher
+                  initialChecked={item.active}
+                  eventTypeId={item.id}
+                />
+
+                <Link href={`/dashboard/event/${item.id}`}>
+                  <Button className="">Edit Event</Button>
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </>
